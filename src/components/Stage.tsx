@@ -52,12 +52,12 @@ export function Stage({ sprite, quip, onAction }: Props) {
 
       <div className="stage">
         {quip && (
-          <div key={quip.id} className={`quip-bubble${quip.crit ? ' crit' : ''}`}>
+          <div key={`q${quip.id}`} className={`quip-bubble${quip.crit ? ' crit' : ''}`}>
             {quip.text}
           </div>
         )}
 
-        <div key={anim?.tick ?? 0} className={`stage-char${anim ? ` anim-${anim.id}` : ''}`}>
+        <div key={`c${anim?.tick ?? 0}`} className={`stage-char${anim ? ` anim-${anim.id}` : ''}`}>
           <canvas ref={canvasRef} width={480} height={480} className="stage-canvas" />
           {anim && <span className={`fx fx-${anim.id}`}>{ACTIONS.find((a) => a.id === anim.id)?.emoji}</span>}
         </div>

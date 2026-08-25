@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Hero } from './components/Hero'
 import { UploadZone } from './components/UploadZone'
 import { StylePanel } from './components/StylePanel'
@@ -50,18 +50,17 @@ export default function App() {
     const crit = Math.random() < CRIT_RATE
     const gain = crit ? CRIT_GAIN : 3 + Math.floor(Math.random() * 13)
     setQuip({ id: ++seq, text: crit ? randomOf(CRIT_QUIPS) : randomOf(action.quips), crit })
-    setPower((prev) => {
-      const next = prev + gain
-      const newly = ACHIEVEMENTS.filter(
-        (a) => prev < a.threshold && next >= a.threshold && !unlockedRef.current.has(a.id),
-      )
-      if (newly.length > 0) {
-        newly.forEach((a) => unlockedRef.current.add(a.id))
-        setToasts((ts) => [...ts, ...newly.map((a) => ({ id: ++seq, title: a.title, desc: a.desc }))])
-      }
-      return next
-    })
+    setPower((prev) => prev + gain)
   }, [])
+
+  /** 成就检查放在 effect 里，避免在 setPower 更新器内产生副作用（StrictMode 下会双调用） */
+  useEffect(() => {
+    const newly = ACHIEVEMENTS.filter((a) => power >= a.threshold && !unlockedRef.current.has(a.id))
+    if (newly.length === 0) return
+    newly.forEach((a) => unlockedRef.current.add(a.id))
+    const items = newly.map((a) => ({ id: ++seq, title: a.title, desc: a.desc }))
+    setToasts((ts) => [...ts, ...items])
+  }, [power])
 
   const dismissToast = useCallback((id: number) => {
     setToasts((ts) => ts.filter((t) => t.id !== id))
