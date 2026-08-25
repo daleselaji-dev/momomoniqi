@@ -1,6 +1,17 @@
 # 桌面预览包（Electron）产出说明
 
-嬷嬷模拟器提供 Electron 桌面预览版：把 Vite 前端产物装进桌面窗口，内置与浏览器版完全相同的「电脑 / 手机」设备预览台。**二进制产物不提交进 git 仓库**（单文件 90MB+ 会永久膨胀仓库历史），按下面的一键命令在本机 / CI 生成，产物统一落在 `dist-preview/`。
+嬷嬷模拟器提供 Electron 桌面预览版：把 Vite 前端产物装进桌面窗口，内置与浏览器版完全相同的「电脑 / 手机」设备预览台。
+
+## 直接下载（推荐）
+
+已发布到 GitHub Releases，Windows 用户可直接下载免安装 portable exe：
+
+- **Release 页面**：https://github.com/daleselaji-dev/momomoniqi/releases/tag/v0.2.0-preview
+- **直接下载 exe**：https://github.com/daleselaji-dev/momomoniqi/releases/download/v0.2.0-preview/momomoniqi-preview-0.2.0-win-portable.exe
+
+双击即可运行（约 88 MB）。若 SmartScreen 提示未知发布者，选择「仍要运行」。
+
+本地重新出包时，产物仍统一落在 `dist-preview/`（该目录不入库，避免 90MB+ 二进制膨胀 git 历史）。
 
 ## 一键出包
 

@@ -6,6 +6,14 @@
 
 产品规划详见 [docs/PRODUCT_PLAN.md](docs/PRODUCT_PLAN.md)。
 
+## Windows 预览版（直接下载）
+
+免安装 portable exe（约 88 MB），双击即用，内含电脑 / 手机预览切换：
+
+**[⬇️ 下载 momomoniqi-preview-0.2.0-win-portable.exe](https://github.com/daleselaji-dev/momomoniqi/releases/download/v0.2.0-preview/momomoniqi-preview-0.2.0-win-portable.exe)**
+
+Release 页：https://github.com/daleselaji-dev/momomoniqi/releases/tag/v0.2.0-preview
+
 ## 本地运行
 
 要求 Node.js ≥ 20。
