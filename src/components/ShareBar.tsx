@@ -7,6 +7,7 @@ interface Props {
   level: string
   quipText: string
   styleName: string
+  onPublish: () => void
 }
 
 async function copyText(text: string): Promise<boolean> {
@@ -25,8 +26,8 @@ async function copyText(text: string): Promise<boolean> {
   }
 }
 
-/** 分享栏：Canvas 生成认证卡下载 PNG / 复制传播文案 */
-export function ShareBar({ sprite, power, level, quipText, styleName }: Props) {
+/** 分享栏：发布到社区（先过审）/ Canvas 生成认证卡下载 PNG / 复制传播文案 */
+export function ShareBar({ sprite, power, level, quipText, styleName, onPublish }: Props) {
   const [copied, setCopied] = useState(false)
 
   function handleDownload() {
@@ -44,6 +45,9 @@ export function ShareBar({ sprite, power, level, quipText, styleName }: Props) {
 
   return (
     <div className="share-bar">
+      <button className="btn-accent" onClick={onPublish}>
+        ⚑ 发布到社区（先过审）
+      </button>
       <button className="btn-primary" onClick={handleDownload}>
         ⬇ 生成嬷嬷认证卡 PNG
       </button>

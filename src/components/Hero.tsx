@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { drawMomoSprite } from '../utils/defaultMomo'
 
-/** 首屏：品牌强信号 + 一句 headline + 支撑句 + CTA + 像素嬷嬷主视觉 */
-export function Hero({ onStart }: { onStart: () => void }) {
+/** 首屏：品牌强信号 + 一句 headline + 支撑句 + 双 CTA（工坊 / 社区）+ 像素嬷嬷主视觉 */
+export function Hero({ onStart, onCommunity }: { onStart: () => void; onCommunity: () => void }) {
   const screenRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -24,10 +24,15 @@ export function Hero({ onStart }: { onStart: () => void }) {
           模拟器
         </h1>
         <p className="hero-headline">把你最严肃的角色，宠成全网嬷嬷。</p>
-        <p className="hero-support">上传一张图，10 秒像素化开嬷 —— 摸摸头、rua 一下，宠出离谱嬷力值。</p>
+        <p className="hero-support">
+          上传一张图，10 秒像素化开嬷 —— 摸头 rua 脸哄睡丢球，宠出离谱嬷力值，DIY 完过审上架社区展台。
+        </p>
         <div className="hero-cta-row">
           <button className="btn-primary" onClick={onStart}>
             立刻开嬷 ▸
+          </button>
+          <button className="btn-ghost" onClick={onCommunity}>
+            🏟 先逛社区展台
           </button>
           <span className="hero-note">无需注册 · 纯前端 · 图片不出浏览器</span>
         </div>

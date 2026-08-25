@@ -4,6 +4,8 @@ export interface ToastItem {
   id: number
   title: string
   desc: string
+  /** 左上角小徽标文字，缺省为「成就解锁」 */
+  badge?: string
 }
 
 function Toast({ item, onDone }: { item: ToastItem; onDone: (id: number) => void }) {
@@ -14,7 +16,7 @@ function Toast({ item, onDone }: { item: ToastItem; onDone: (id: number) => void
 
   return (
     <div className="toast">
-      <span className="toast-badge">成就解锁</span>
+      <span className="toast-badge">{item.badge ?? '成就解锁'}</span>
       <strong>{item.title}</strong>
       <span className="toast-desc">{item.desc}</span>
     </div>

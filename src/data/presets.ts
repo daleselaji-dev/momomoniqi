@@ -33,6 +33,30 @@ export const STYLE_PRESETS: StylePreset[] = [
     dither: 0.9,
     swatch: 'linear-gradient(135deg, #191413 0 40%, #4c403a 40% 60%, #f3ead7 60% 100%)',
   },
+  {
+    id: 'tama',
+    name: '拓麻液晶',
+    tagline: '电子宠物三阶灰绿屏',
+    ramp: ['#333c25', '#6f7f52', '#c2d3a2'],
+    dither: 1,
+    swatch: 'linear-gradient(135deg, #333c25 0 34%, #6f7f52 34% 67%, #c2d3a2 67% 100%)',
+  },
+  {
+    id: 'sticker',
+    name: '贴纸手账',
+    tagline: '粉彩糖果，可爱到犯规',
+    ramp: ['#5b4a6b', '#a06a9e', '#e78fb3', '#ffc6d9', '#bfeee0', '#fff0d8'],
+    dither: 0.3,
+    swatch: 'linear-gradient(135deg, #5b4a6b 0 20%, #e78fb3 20% 50%, #ffc6d9 50% 75%, #bfeee0 75% 100%)',
+  },
+  {
+    id: 'manga',
+    name: '黑白漫画',
+    tagline: '一比特网点，热血分镜',
+    ramp: ['#101014', '#f5f5f0'],
+    dither: 1,
+    swatch: 'linear-gradient(135deg, #101014 0 50%, #f5f5f0 50% 100%)',
+  },
 ]
 
 export function getPreset(id: string): StylePreset {
