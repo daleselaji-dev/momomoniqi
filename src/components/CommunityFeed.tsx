@@ -137,6 +137,7 @@ function FeedCard({
         <p className="feed-author">@{post.author}</p>
         {post.blurb && <p className="feed-blurb">{post.blurb}</p>}
         <div className="feed-stats">
+          {post.charName && <span className="feed-stat pink">主角 {post.charName}</span>}
           <span className="feed-stat">风格 {post.styleName}</span>
           <span className="feed-stat pink">嬷力 {post.power}</span>
           <span className="feed-stat">「{post.level}」</span>

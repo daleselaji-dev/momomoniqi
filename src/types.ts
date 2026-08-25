@@ -12,7 +12,24 @@ export interface StylePreset {
   swatch: string
 }
 
-export type ActionId = 'pat' | 'rua' | 'boop' | 'feed' | 'sleep' | 'praise' | 'play'
+export type ActionId =
+  | 'pat'
+  | 'rua'
+  | 'boop'
+  | 'feed'
+  | 'sleep'
+  | 'praise'
+  | 'play'
+  /* 摸摸 meme 系（摸头杀 / rua脸 / 吸猫 / 贴贴 / 爪巴拍拍 / 顺毛） */
+  | 'petpet'
+  | 'ruaface'
+  | 'suckcat'
+  | 'tietie'
+  | 'pawpat'
+  | 'smoothfur'
+
+/** 舞台叠加特效：摸头光晕 / 猫爪印 / 满屏心心 */
+export type StageFx = 'halo' | 'paws' | 'hearts'
 
 export interface ActionDef {
   id: ActionId
@@ -21,6 +38,10 @@ export interface ActionDef {
   /** 互动瞬间飘散的粒子表情 */
   particles: string[]
   quips: string[]
+  /** 触发的舞台叠加特效（可多个） */
+  fx?: StageFx[]
+  /** 角色表情气泡：按亲密度分级 [冷淡, 破防中, 彻底沦陷] */
+  faces?: [string, string, string]
 }
 
 export interface Quip {
@@ -70,6 +91,54 @@ export interface CharacterDef {
   colors: Record<string, string>
 }
 
+/* ---------- 角色解析流水线（浏览器本地，零联网） ---------- */
+
+/** 图像统计特征：解析全部来自缩采样后的像素启发式，不出浏览器 */
+export interface ImageStats {
+  /** 平均亮度 0~1 */
+  luma: number
+  /** 亮度对比（标准差）0~1 */
+  contrast: number
+  /** 平均饱和度 0~1 */
+  saturation: number
+  /** 主色相 0~360 */
+  domHue: number
+  /** 彩度丰富度 0~1 */
+  colorfulness: number
+  /** 边缘密度 0~1（构图繁简） */
+  edgeDensity: number
+  /** 暖色占比 0~1 */
+  warmth: number
+}
+
+/** 「这是谁」解析产出的角色档案建议 */
+export interface CharacterProfile {
+  archetypeId: string
+  /** 气质原型名（高冷系 / 软萌系 / 霸总系…） */
+  archetypeLabel: string
+  /** 当前确认的昵称（用户可改） */
+  name: string
+  /** 昵称候选（一键换名） */
+  nameCandidates: string[]
+  /** 气质标签（进认证卡 / 社区） */
+  vibeTags: string[]
+  /** 推荐语气 */
+  tone: ToneId
+  /** 推荐风格 */
+  styleId: StyleId
+  /** 一句话解析结论 */
+  blurb: string
+  stats: ImageStats
+}
+
+/** 抠背景结果：keyed = 边缘泛洪抠图成功；fallback = 中心柔边降级 */
+export interface CutoutResult {
+  canvas: HTMLCanvasElement
+  method: 'keyed' | 'fallback'
+  /** 被判定为背景移除的像素占比 0~1 */
+  removedRatio: number
+}
+
 /* ---------- 工作流（可保存 / 复用的创作流水线） ---------- */
 
 export interface WorkflowSnapshot {
@@ -111,6 +180,8 @@ export interface CommunityPost {
   styleId?: StyleId
   /** 语气标签（嬷向 / 攻向），旧数据可能缺失 */
   tone?: ToneId
+  /** 解析/选定的角色名（旧数据可能缺失） */
+  charName?: string
   power: number
   level: string
   likes: number

@@ -34,6 +34,20 @@ export const WORKFLOW_TEMPLATES: WorkflowTemplate[] = [
     tone: 'momo',
     script: ['feed', 'feed', 'boop', 'sleep', 'sleep'],
   },
+  {
+    id: 'tpl-petpet',
+    name: '小猫摸头杀连击',
+    desc: '摸头杀三连 → 顺毛 → 贴贴收尾，威严当场清库存',
+    tone: 'momo',
+    script: ['petpet', 'petpet', 'petpet', 'smoothfur', 'tietie', 'praise'],
+  },
+  {
+    id: 'tpl-suckcat',
+    name: '吸猫贴贴循环',
+    desc: '爪巴试探 → 深吸一口 → 贴贴双连，高冷攻原地融化',
+    tone: 'gong',
+    script: ['pawpat', 'suckcat', 'tietie', 'tietie', 'petpet', 'ruaface'],
+  },
 ]
 
 /** 二创同款时按语气推荐一套脚本 */

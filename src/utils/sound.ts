@@ -122,6 +122,42 @@ export function playAction(id: ActionId): void {
       beep({ freq: 784, slide: 392, dur: 0.12, delay: 0.14, type: 'triangle', vol: 0.05 })
       noiseBurst(0.04, 0.28, 0.04)
       break
+    case 'petpet':
+      /* 摸头杀三连拍：快速三次软触 + 上扬心动音 */
+      beep({ freq: 740, slide: 620, dur: 0.05, type: 'triangle', vol: 0.05 })
+      beep({ freq: 740, slide: 620, dur: 0.05, delay: 0.11, type: 'triangle', vol: 0.05 })
+      beep({ freq: 740, slide: 620, dur: 0.05, delay: 0.22, type: 'triangle', vol: 0.05 })
+      beep({ freq: 880, slide: 1320, dur: 0.14, delay: 0.34, type: 'sine', vol: 0.05 })
+      break
+    case 'ruaface':
+      beep({ freq: 260, slide: 480, dur: 0.1, type: 'sawtooth', vol: 0.04 })
+      beep({ freq: 480, slide: 240, dur: 0.1, delay: 0.1, type: 'sawtooth', vol: 0.04 })
+      beep({ freq: 300, slide: 560, dur: 0.12, delay: 0.2, type: 'sawtooth', vol: 0.04 })
+      break
+    case 'suckcat':
+      /* 吸气：上行噪声 + 满足叹息滑音 */
+      noiseBurst(0.22, 0, 0.045)
+      beep({ freq: 320, slide: 980, dur: 0.24, type: 'sine', vol: 0.035 })
+      beep({ freq: 660, slide: 440, dur: 0.2, delay: 0.3, type: 'sine', vol: 0.045 })
+      break
+    case 'tietie':
+      beep({ freq: 523, slide: 659, dur: 0.14, type: 'sine', vol: 0.05 })
+      beep({ freq: 659, slide: 784, dur: 0.18, delay: 0.15, type: 'sine', vol: 0.05 })
+      beep({ freq: 988, dur: 0.08, delay: 0.36, type: 'triangle', vol: 0.04 })
+      break
+    case 'pawpat':
+      /* 肉垫轻拍：两声软噪 + 短促「喵」式滑音 */
+      noiseBurst(0.04, 0, 0.05)
+      noiseBurst(0.04, 0.12, 0.05)
+      beep({ freq: 620, slide: 920, dur: 0.09, delay: 0.24, type: 'triangle', vol: 0.045 })
+      beep({ freq: 920, slide: 700, dur: 0.08, delay: 0.33, type: 'triangle', vol: 0.04 })
+      break
+    case 'smoothfur':
+      /* 顺毛：绵长下行 + 呼噜颤音 */
+      beep({ freq: 880, slide: 440, dur: 0.3, type: 'sine', vol: 0.04 })
+      beep({ freq: 110, dur: 0.12, delay: 0.3, type: 'sawtooth', vol: 0.02 })
+      beep({ freq: 98, dur: 0.12, delay: 0.44, type: 'sawtooth', vol: 0.02 })
+      break
   }
 }
 
@@ -158,6 +194,19 @@ export function playPublish(): void {
 export function playReject(): void {
   beep({ freq: 220, dur: 0.14, type: 'sawtooth', vol: 0.045 })
   beep({ freq: 165, dur: 0.22, delay: 0.15, type: 'sawtooth', vol: 0.045 })
+}
+
+/** 解析扫描音：雷达式两声递进哔 */
+export function playScan(): void {
+  beep({ freq: 880, dur: 0.06, type: 'square', vol: 0.035 })
+  beep({ freq: 1175, dur: 0.06, delay: 0.18, type: 'square', vol: 0.035 })
+  beep({ freq: 1568, dur: 0.1, delay: 0.36, type: 'square', vol: 0.04 })
+}
+
+/** 抠图揭示音：噪声消散 + 清脆定格 */
+export function playCutout(): void {
+  noiseBurst(0.16, 0, 0.04)
+  beep({ freq: 1320, slide: 1760, dur: 0.12, delay: 0.16, type: 'triangle', vol: 0.05 })
 }
 
 /** 角色载入传送音：上滑锯齿 + 落定琶音 */

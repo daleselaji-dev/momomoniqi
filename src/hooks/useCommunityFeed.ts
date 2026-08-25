@@ -46,6 +46,8 @@ export interface PublishPayload extends PublishInput {
   styleName: string
   styleId: StyleId
   tone: ToneId
+  /** 角色名（解析档案 / 原创角色） */
+  charName?: string
   power: number
   level: string
 }
@@ -73,6 +75,7 @@ export function useCommunityFeed() {
         styleName: payload.styleName,
         styleId: payload.styleId,
         tone: payload.tone,
+        charName: payload.charName,
         power: payload.power,
         level: payload.level,
         likes: 0,

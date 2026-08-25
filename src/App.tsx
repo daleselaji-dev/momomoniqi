@@ -12,6 +12,7 @@ import { NavBar, type View } from './components/NavBar'
 import { CommunityFeed } from './components/CommunityFeed'
 import { PreviewStage } from './components/PreviewStage'
 import { PublishModal } from './components/PublishModal'
+import { ParsePipeline, type PipelineOutput } from './components/ParsePipeline'
 import { Disclaimer } from './components/Disclaimer'
 import { Toasts, type ToastItem } from './components/Toasts'
 import { useRecentTemplates } from './hooks/useRecentTemplates'
@@ -30,6 +31,7 @@ import type {
   ActionId,
   CareStats,
   CharacterDef,
+  CharacterProfile,
   CommunityPost,
   PublishInput,
   Quip,
@@ -53,6 +55,10 @@ export default function App() {
   const [muted, setMutedState] = useState(isMuted)
   const [source, setSource] = useState<HTMLImageElement | HTMLCanvasElement | null>(null)
   const [characterId, setCharacterId] = useState<string | null>(null)
+  /** 上传后待解析的原图：非空时弹出角色解析流水线 */
+  const [pipelineImg, setPipelineImg] = useState<HTMLImageElement | null>(null)
+  /** 「这是谁」解析出的角色档案（进认证卡 / 社区作品） */
+  const [profile, setProfile] = useState<CharacterProfile | null>(null)
   const [styleId, setStyleId] = useState<StyleId>('pixel')
   const [resolution, setResolution] = useState(48)
   const [tone, setTone] = useState<ToneId>('momo')
@@ -81,6 +87,21 @@ export default function App() {
     () => pixelate(source ?? getDefaultSource(), resolution, preset),
     [source, resolution, preset],
   )
+
+  const characterName = characterId
+    ? getCharacter(characterId)?.name ?? '原创角色'
+    : profile
+      ? profile.name
+      : source
+        ? '自定义角色'
+        : '默认嬷嬷'
+
+  /** 气质标签：解析档案优先，原创角色回退到其人设标签 */
+  const charTags = profile
+    ? profile.vibeTags
+    : characterId
+      ? getCharacter(characterId)?.vibe.split(' · ') ?? []
+      : []
 
   const scrollToWorkshop = useCallback(() => {
     workshopRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -116,16 +137,32 @@ export default function App() {
     setToasts((ts) => [...ts, { ...item, id: ++seq }])
   }, [])
 
-  const handleImage = useCallback(
-    (img: HTMLImageElement) => {
-      setSource(img)
+  /** 上传图不再直接上台，而是先进「角色解析流水线」（解析 → 抠图 → 像素角色化） */
+  const handleImage = useCallback((img: HTMLImageElement) => {
+    setPipelineImg(img)
+  }, [])
+
+  /** 流水线确认：装载抠图产物 + 解析档案（昵称 / 语气 / 风格），spawn 开嬷 */
+  const handlePipelineComplete = useCallback(
+    ({ source: parsed, profile: prof }: PipelineOutput) => {
+      setSource(parsed)
       setCharacterId(null)
+      setProfile(prof)
+      setTone(prof.tone)
+      setStyleId(prof.styleId)
+      setStyleTouched(true)
       setSpawnTick((t) => t + 1)
       playSpawn()
-      addTemplate(toThumbnail(img))
+      if (pipelineImg) addTemplate(toThumbnail(pipelineImg))
+      setPipelineImg(null)
+      pushToast({
+        badge: '解析',
+        title: `「${prof.name}」已入驻工坊`,
+        desc: `${prof.archetypeLabel} · 已切「${getTone(prof.tone).name}」语气与「${getPreset(prof.styleId).name}」风格`,
+      })
       scrollToWorkshop()
     },
-    [addTemplate, scrollToWorkshop],
+    [pipelineImg, addTemplate, pushToast, scrollToWorkshop],
   )
 
   /** 载入原创角色：换源图 + 自动切到推荐语气 + spawn 传送动效 */
@@ -133,6 +170,7 @@ export default function App() {
     (def: CharacterDef) => {
       setSource(drawCharacter(def, 16))
       setCharacterId(def.id)
+      setProfile(null)
       setTone(def.tone)
       setSpawnTick((t) => t + 1)
       playSpawn()
@@ -149,6 +187,7 @@ export default function App() {
   const handleReset = useCallback(() => {
     setSource(null)
     setCharacterId(null)
+    setProfile(null)
   }, [])
 
   const handleStyle = useCallback((id: StyleId) => {
@@ -279,6 +318,7 @@ export default function App() {
         styleName: preset.name,
         styleId: preset.id,
         tone,
+        charName: characterName,
         power,
         level: levelName(power),
       })
@@ -288,14 +328,8 @@ export default function App() {
       pushToast({ badge: '社区', title: '发布成功', desc: '作品已过审上架社区展台' })
       goCommunity()
     },
-    [feed, sprite, preset, tone, power, pushToast, goCommunity],
+    [feed, sprite, preset, tone, characterName, power, pushToast, goCommunity],
   )
-
-  const characterName = characterId
-    ? getCharacter(characterId)?.name ?? '原创角色'
-    : source
-      ? '自定义角色'
-      : '默认嬷嬷'
 
   const stepFlags = {
     character: source !== null,
@@ -344,6 +378,7 @@ export default function App() {
                   onAction={handleAction}
                   autoFire={autoFire}
                   spawnTick={spawnTick}
+                  bond={care.bond}
                 />
                 <div className="status-row">
                   <MomoMeter power={power} />
@@ -372,6 +407,8 @@ export default function App() {
                   quipText={quip?.text ?? '本嬷嬷今日营业，欢迎来宠。'}
                   styleName={preset.name}
                   toneTag={`${getTone(tone).name}二创`}
+                  charName={characterName}
+                  charTags={charTags}
                   onPublish={() => setPublishOpen(true)}
                   onProduced={() => setProduced(true)}
                 />
@@ -399,6 +436,14 @@ export default function App() {
         <Disclaimer variant="compact" />
       </footer>
 
+      {pipelineImg && (
+        <ParsePipeline
+          img={pipelineImg}
+          onComplete={handlePipelineComplete}
+          onClose={() => setPipelineImg(null)}
+        />
+      )}
+
       {publishOpen && (
         <PublishModal
           thumb={sprite.toDataURL()}
@@ -406,6 +451,7 @@ export default function App() {
           level={levelName(power)}
           styleName={preset.name}
           toneName={getTone(tone).name}
+          charName={characterName}
           onPublish={handlePublish}
           onClose={() => setPublishOpen(false)}
         />

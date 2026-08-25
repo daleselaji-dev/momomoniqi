@@ -11,6 +11,8 @@ interface SeedDef {
   blurb: string
   /** 原创角色库 id；缺省用内置像素嬷嬷 */
   characterId?: string
+  /** 展示用角色名（解析流水线产出示例） */
+  charName?: string
   styleId: StyleId
   tone: ToneId
   resolution: number
@@ -132,6 +134,36 @@ const SEED_DEFS: SeedDef[] = [
     likes: 173,
     cheers: 66,
   },
+  {
+    id: 'seed-petpet',
+    title: '小猫摸头杀连击实录：第 3 下她自己凑过来了',
+    author: '摸头杀研究所',
+    blurb: '「小猫摸头杀连击」模板一键复刻：摸头杀×3 → 顺毛 → 贴贴，铁面姑姑喉咙里的呼噜声已传出宫墙。',
+    characterId: 'iron-gugu',
+    charName: '铁面姑姑',
+    styleId: 'sticker',
+    tone: 'momo',
+    resolution: 40,
+    power: 777,
+    level: '嬷界扛把子',
+    likes: 486,
+    cheers: 231,
+  },
+  {
+    id: 'seed-suckcat',
+    title: '吸攻实测：前调禁欲后调奶味',
+    author: '贴贴永动机',
+    blurb: '上传图自动解析出「墨阁主」，抠背景成透明立绘——吸猫贴贴循环跑完，白切黑当场融化成大型猫科。',
+    characterId: 'sword-gong',
+    charName: '墨阁主',
+    styleId: 'cyberpink',
+    tone: 'gong',
+    resolution: 48,
+    power: 892,
+    level: '嬷界扛把子',
+    likes: 358,
+    cheers: 190,
+  },
 ]
 
 /** 用原创角色 / 内置像素嬷嬷 + 风格预设现场渲染种子作品缩略图 */
@@ -150,6 +182,7 @@ export function buildSeedPosts(): CommunityPost[] {
       styleName: getPreset(def.styleId).name,
       styleId: def.styleId,
       tone: def.tone,
+      charName: def.charName,
       power: def.power,
       level: def.level,
       likes: def.likes,
