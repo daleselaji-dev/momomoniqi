@@ -28,9 +28,10 @@ export function Stage({ sprite, quip, onAction }: Props) {
   const [shaking, setShaking] = useState(false)
   const [flashing, setFlashing] = useState(false)
 
+  /** anim.tick 变化会通过 key 重挂载画布（重启 CSS 动画），必须跟着重绘 */
   useEffect(() => {
     if (canvasRef.current) blitPixelArt(sprite, canvasRef.current)
-  }, [sprite])
+  }, [sprite, anim])
 
   /** 暴击时震屏 + 白闪 */
   useEffect(() => {
