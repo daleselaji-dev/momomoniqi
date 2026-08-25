@@ -4,6 +4,10 @@ interface ShareCardInput {
   level: string
   quip: string
   styleName: string
+  /** 角色名（解析档案 / 原创角色），认证卡主角署名 */
+  charName: string
+  /** 气质标签（#高冷 #贴贴狂魔…），随卡传播 */
+  charTags: string[]
 }
 
 const W = 900
@@ -78,25 +82,29 @@ export function renderShareCard(input: ShareCardInput): HTMLCanvasElement {
   ctx.imageSmoothingEnabled = false
   ctx.drawImage(input.sprite, x, y, size, size)
 
-  // 风格标签
+  // 认证主角：角色名 + 气质标签（解析流水线产出）
+  ctx.fillStyle = '#ff9edb'
+  ctx.font = `900 46px ${zh}`
+  ctx.fillText(`「${input.charName}」`, W / 2, y + size + 62)
   ctx.fillStyle = '#b8f04a'
-  ctx.font = `700 30px ${zh}`
-  ctx.fillText(`风格 · ${input.styleName}`, W / 2, y + size + 66)
+  ctx.font = `700 28px ${zh}`
+  const tagLine = input.charTags.length > 0 ? input.charTags.map((t) => `#${t}`).join(' ') + ' · ' : ''
+  ctx.fillText(`${tagLine}风格·${input.styleName}`, W / 2, y + size + 108)
 
   // 嬷力值
   ctx.fillStyle = '#f5eee0'
   ctx.font = `900 58px ${zh}`
-  ctx.fillText(`嬷力值 ${input.power}`, W / 2, y + size + 140)
+  ctx.fillText(`嬷力值 ${input.power}`, W / 2, y + size + 178)
   ctx.fillStyle = '#ff9edb'
   ctx.font = `700 34px ${zh}`
-  ctx.fillText(`段位 「${input.level}」`, W / 2, y + size + 192)
+  ctx.fillText(`段位 「${input.level}」`, W / 2, y + size + 226)
 
   // 无厘头文案
   ctx.fillStyle = '#c9c2d8'
   ctx.font = `500 30px ${zh}`
   const lines = wrapText(ctx, `“${input.quip}”`, W - 200)
-  lines.slice(0, 3).forEach((line, i) => {
-    ctx.fillText(line, W / 2, y + size + 258 + i * 44)
+  lines.slice(0, 2).forEach((line, i) => {
+    ctx.fillText(line, W / 2, y + size + 288 + i * 44)
   })
 
   // 页脚
@@ -120,6 +128,8 @@ export function downloadCard(canvas: HTMLCanvasElement, filename = 'momo-card.pn
   }, 'image/png')
 }
 
-export function buildShareText(power: number, level: string, quip: string): string {
-  return `我在【嬷嬷模拟器】里把角色宠出了 ${power} 点嬷力值，当前段位「${level}」。${quip} #嬷嬷模拟器 #momomoniqi`
+export function buildShareText(power: number, level: string, quip: string, toneTag?: string, charName?: string): string {
+  const extra = toneTag ? ` #${toneTag}` : ''
+  const who = charName ? `「${charName}」` : '角色'
+  return `我在【嬷嬷模拟器】里把${who}宠出了 ${power} 点嬷力值，当前段位「${level}」。${quip} #嬷嬷模拟器 #momomoniqi${extra}`
 }

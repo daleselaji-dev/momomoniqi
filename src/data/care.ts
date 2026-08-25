@@ -11,6 +11,13 @@ export const CARE_EFFECTS: Record<ActionId, CareEffect> = {
   sleep: { energy: 18, bond: 2 },
   praise: { bond: 6, energy: -1 },
   play: { bond: 8, energy: -12 },
+  /* 摸摸 meme 系：偏涨亲密；顺毛是唯一回精力的抚摸动作（被顺舒服了） */
+  petpet: { bond: 5, energy: -2 },
+  ruaface: { bond: 4, energy: -3 },
+  suckcat: { bond: 6, energy: -2 },
+  tietie: { bond: 7, energy: -1 },
+  pawpat: { bond: 3, energy: -2 },
+  smoothfur: { bond: 4, energy: 3 },
 }
 
 const clamp = (n: number) => Math.max(0, Math.min(100, n))

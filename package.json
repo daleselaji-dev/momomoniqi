@@ -1,12 +1,19 @@
 {
   "name": "momomoniqi",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
+  "description": "嬷嬷模拟器 momomoniqi —— 把严肃角色宠成全网嬷嬷的创意工作台",
+  "author": "momomoniqi",
   "type": "module",
+  "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preview:electron": "npm run build && electron .",
+    "build:preview": "npm run build && electron-builder --linux dir --publish never",
+    "build:preview:appimage": "npm run build && electron-builder --linux AppImage --publish never",
+    "build:preview:win": "npm run build && electron-builder --win portable --publish never"
   },
   "dependencies": {
     "react": "^19.2.8",
@@ -17,7 +24,47 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.1.0",
+    "electron": "^44.0.0",
+    "electron-builder": "^26.15.3",
     "typescript": "~6.0.2",
     "vite": "^8.2.2"
+  },
+  "build": {
+    "appId": "com.momomoniqi.preview",
+    "productName": "momomoniqi-preview",
+    "directories": {
+      "output": "dist-preview"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "npmRebuild": false,
+    "electronLanguages": [
+      "zh-CN",
+      "en-US"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "signAndEditExecutable": false
+    },
+    "portable": {
+      "artifactName": "momomoniqi-preview-${version}-win-portable.exe"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Game",
+      "artifactName": "momomoniqi-preview-${version}-linux.${ext}"
+    }
   }
 }

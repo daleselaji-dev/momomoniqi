@@ -60,6 +60,7 @@ export function UploadZone({ onImage, onReset, hasCustomImage, templates }: Prop
       >
         <span className="dropzone-icon">⇪</span>
         <p className="dropzone-main">拖一张角色图进来，或点击选择</p>
+        <p className="dropzone-sub">上传 → 解析「这是谁」→ 抠背景 → 像素角色 → 开嬷</p>
         <p className="dropzone-sub">支持 jpg / png / webp · 全程本地处理</p>
         <input
           ref={inputRef}

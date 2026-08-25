@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { buildSeedPosts } from '../data/seedPosts'
-import type { CommunityPost, PublishInput } from '../types'
+import type { CommunityPost, PublishInput, StyleId, ToneId } from '../types'
 
 const KEY = 'momo.feed.v1'
 const MAX_POSTS = 60
@@ -24,7 +24,14 @@ function load(): CommunityPost[] {
     const raw = localStorage.getItem(KEY)
     if (raw) {
       const list = JSON.parse(raw) as CommunityPost[]
-      if (Array.isArray(list) && list.length > 0) return list
+      if (Array.isArray(list) && list.length > 0) {
+        /* 老用户增量补种：上新的种子作品（如攻向二创）按 id 合并进已有 feed */
+        const missing = buildSeedPosts().filter((s) => !list.some((p) => p.id === s.id))
+        if (missing.length === 0) return list
+        const merged = [...list, ...missing]
+        save(merged)
+        return merged
+      }
     }
   } catch {
     /* 解析失败则重新播种 */
@@ -37,6 +44,10 @@ function load(): CommunityPost[] {
 export interface PublishPayload extends PublishInput {
   thumb: string
   styleName: string
+  styleId: StyleId
+  tone: ToneId
+  /** 角色名（解析档案 / 原创角色） */
+  charName?: string
   power: number
   level: string
 }
@@ -62,6 +73,9 @@ export function useCommunityFeed() {
         blurb: payload.blurb,
         thumb: payload.thumb,
         styleName: payload.styleName,
+        styleId: payload.styleId,
+        tone: payload.tone,
+        charName: payload.charName,
         power: payload.power,
         level: payload.level,
         likes: 0,

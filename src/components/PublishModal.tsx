@@ -9,6 +9,10 @@ interface Props {
   power: number
   level: string
   styleName: string
+  /** 当前语气包名（嬷向 / 攻向），随作品一起上架 */
+  toneName: string
+  /** 角色名（解析档案 / 原创角色），随作品展示 */
+  charName: string
   onPublish: (input: PublishInput) => void
   onClose: () => void
 }
@@ -19,7 +23,7 @@ type Status = { kind: 'idle' } | { kind: 'checking' } | { kind: 'passed' } | { k
  * 发布到社区弹窗：填写 → 提交审核（强制）→ 通过后才可发布。
  * 任何字段被修改都会作废已有审核结果，必须重新过审。
  */
-export function PublishModal({ thumb, power, level, styleName, onPublish, onClose }: Props) {
+export function PublishModal({ thumb, power, level, styleName, toneName, charName, onPublish, onClose }: Props) {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [blurb, setBlurb] = useState('')
@@ -78,7 +82,8 @@ export function PublishModal({ thumb, power, level, styleName, onPublish, onClos
         <div className="publish-preview">
           <img src={thumb} alt="作品预览" className="publish-thumb" />
           <div className="publish-meta">
-            <span className="publish-meta-line">风格 · {styleName}</span>
+            <span className="publish-meta-line">主角 · {charName}</span>
+            <span className="publish-meta-line">风格 · {styleName} / 语气 · {toneName}</span>
             <span className="publish-meta-line strong">嬷力值 {power}</span>
             <span className="publish-meta-line">段位 「{level}」</span>
           </div>

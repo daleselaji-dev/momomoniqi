@@ -8,12 +8,14 @@ interface Props {
   onLike: (id: string) => void
   onCheer: (id: string) => void
   onGoWorkshop: () => void
+  /** 二创同款：把该作品的风格 + 语气 + 推荐脚本装进工坊 */
+  onRemix: (post: CommunityPost) => void
 }
 
 type Filter = 'all' | 'mine'
 
-/** 社区展台：DIY 作品 feed + 点赞 / 点彩互动 + 全部/我的过滤 */
-export function CommunityFeed({ posts, onLike, onCheer, onGoWorkshop }: Props) {
+/** 社区展台：DIY 作品 feed + 点赞 / 点彩 / 二创同款 + 全部/我的过滤 */
+export function CommunityFeed({ posts, onLike, onCheer, onGoWorkshop, onRemix }: Props) {
   const [filter, setFilter] = useState<Filter>('all')
   const visible = filter === 'mine' ? posts.filter((p) => p.mine) : posts
 
@@ -21,7 +23,7 @@ export function CommunityFeed({ posts, onLike, onCheer, onGoWorkshop }: Props) {
     <section className="community">
       <div className="workshop-head">
         <h2 className="workshop-title">社区展台</h2>
-        <p className="workshop-sub">全站嬷嬷同人二创集散地 —— 点赞收藏，点彩打 call</p>
+        <p className="workshop-sub">攻的嬷的都有 —— 点赞收藏，点彩打 call，看中哪只直接「二创同款」</p>
       </div>
 
       <Disclaimer />
@@ -61,7 +63,7 @@ export function CommunityFeed({ posts, onLike, onCheer, onGoWorkshop }: Props) {
       ) : (
         <div className="feed-grid">
           {visible.map((post) => (
-            <FeedCard key={post.id} post={post} onLike={onLike} onCheer={onCheer} />
+            <FeedCard key={post.id} post={post} onLike={onLike} onCheer={onCheer} onRemix={onRemix} />
           ))}
         </div>
       )}
@@ -84,10 +86,12 @@ function FeedCard({
   post,
   onLike,
   onCheer,
+  onRemix,
 }: {
   post: CommunityPost
   onLike: (id: string) => void
   onCheer: (id: string) => void
+  onRemix: (post: CommunityPost) => void
 }) {
   const [confetti, setConfetti] = useState<ConfettiBit[]>([])
 
@@ -122,6 +126,9 @@ function FeedCard({
         <div className="feed-tags">
           {post.seed && <span className="feed-tag seed">种子示例</span>}
           {post.mine && <span className="feed-tag mine">我的</span>}
+          {post.tone && (
+            <span className={`feed-tag tone-${post.tone}`}>{post.tone === 'gong' ? '攻向' : '嬷向'}</span>
+          )}
         </div>
       </div>
 
@@ -130,13 +137,14 @@ function FeedCard({
         <p className="feed-author">@{post.author}</p>
         {post.blurb && <p className="feed-blurb">{post.blurb}</p>}
         <div className="feed-stats">
+          {post.charName && <span className="feed-stat pink">主角 {post.charName}</span>}
           <span className="feed-stat">风格 {post.styleName}</span>
           <span className="feed-stat pink">嬷力 {post.power}</span>
           <span className="feed-stat">「{post.level}」</span>
         </div>
       </div>
 
-      <div className="feed-actions">
+      <div className="feed-actions three">
         <button
           className={`feed-btn like${post.likedByMe ? ' on' : ''}`}
           onClick={handleLike}
@@ -145,7 +153,10 @@ function FeedCard({
           {post.likedByMe ? '♥' : '♡'} {post.likes}
         </button>
         <button className="feed-btn cheer" onClick={handleCheer}>
-          🎉 点彩 {post.cheers}
+          🎉 {post.cheers}
+        </button>
+        <button className="feed-btn remix" onClick={() => onRemix(post)} title="把同款风格与语气装进工坊">
+          ⚡ 二创同款
         </button>
       </div>
 
