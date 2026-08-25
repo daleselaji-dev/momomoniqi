@@ -7,7 +7,11 @@ interface Props {
   level: string
   quipText: string
   styleName: string
+  /** 语气话题标签（如「攻向二创」），拼进传播文案 */
+  toneTag: string
   onPublish: () => void
+  /** 出片动作（下载卡 / 复制文案）发生时回调：点亮工作流「出片」步骤 */
+  onProduced: () => void
 }
 
 async function copyText(text: string): Promise<boolean> {
@@ -27,19 +31,21 @@ async function copyText(text: string): Promise<boolean> {
 }
 
 /** 分享栏：发布到社区（先过审）/ Canvas 生成认证卡下载 PNG / 复制传播文案 */
-export function ShareBar({ sprite, power, level, quipText, styleName, onPublish }: Props) {
+export function ShareBar({ sprite, power, level, quipText, styleName, toneTag, onPublish, onProduced }: Props) {
   const [copied, setCopied] = useState(false)
 
   function handleDownload() {
     const card = renderShareCard({ sprite, power, level, quip: quipText, styleName })
     downloadCard(card, `momo-card-${power}.png`)
+    onProduced()
   }
 
   async function handleCopy() {
-    const ok = await copyText(buildShareText(power, level, quipText))
+    const ok = await copyText(buildShareText(power, level, quipText, toneTag))
     if (ok) {
       setCopied(true)
       window.setTimeout(() => setCopied(false), 1800)
+      onProduced()
     }
   }
 

@@ -1,4 +1,4 @@
-import type { Achievement, ActionDef } from '../types'
+import type { Achievement, ActionDef, ActionId, ToneDef, ToneId } from '../types'
 
 export const ACTIONS: ActionDef[] = [
   {
@@ -99,6 +99,87 @@ export const CRIT_QUIPS = [
   '触发隐藏剧情：嬷嬷笑出了声，史官连夜记载。',
   '嬷力临界！方圆十里的严肃角色集体破功。',
 ]
+
+/* ---------- 语气包：嬷向（默认，即 ACTIONS 自带文案）/ 攻向 ---------- */
+
+export const TONES: ToneDef[] = [
+  { id: 'momo', name: '嬷向', short: '嬷', tagline: '威严外壳，宠一下就破功' },
+  { id: 'gong', name: '攻向', short: '攻', tagline: '低音炮高冷壳，反差裂开' },
+]
+
+export function getTone(id: ToneId): ToneDef {
+  return TONES.find((t) => t.id === id) ?? TONES[0]
+}
+
+/** 攻向文案池：同一批动作换一套「高冷崩坏」语气，蹭攻系二创热点只改这里 */
+const GONG_QUIPS: Record<ActionId, string[]> = {
+  pat: [
+    '摸头？本总裁的发型价值一个亿……再摸一次。',
+    '这只手，允许它在头顶停留三秒。三秒之后——续费。',
+    '低音炮警告：再摸，就把你写进遗嘱第一顺位。',
+    '攻气外泄 0.3 秒，形象管理部连夜加班。',
+    '他垂眸轻笑：胆子不小。（耳朵红了）',
+  ],
+  rua: [
+    'rua 谁呢？……没说停。',
+    '脸被 rua 变形的瞬间，股价涨停了。',
+    '他握住你的手腕，声音低哑：闹够了？（并没有松开）',
+    '警告：该攻表面冷酷，脸部回弹参数已泄露。',
+    'rua 完记得负责，本座只对你弹性开放。',
+  ],
+  boop: [
+    '拍本座肩膀的人，全公司只有你还活着，且升职了。',
+    '啪。西装第二颗纽扣应声而落，他说：拿去。',
+    '被拍了一下，反手把整层楼包给你。',
+    '他挑眉：胆敢偷袭？……手感不错，再来。',
+    '拍拍认证：该攻外壳坚硬，内里酥麻。',
+  ],
+  feed: [
+    '本座不吃甜……（三秒后碗空了）',
+    '投喂成功：冷面攻嘴角上扬 0.5°，监控已存档。',
+    '他接过糖，面无表情地说难吃，然后收进了西装内袋。',
+    '喂食记录：拒绝 0 次，真香 100 次。',
+    '低音炮：再喂一颗，就把糖厂买给你。',
+  ],
+  sleep: [
+    '他说通宵是常态……三分钟后靠在你肩上睡熟了。',
+    '哄睡成功：攻的防御塔全数下线，呼吸绵长。',
+    '梦话监听：唔……别走……（手指勾住你袖口）',
+    '全网最冷的男人，睡颜软得一塌糊涂。',
+    '本座只是闭目养神……（已进入贤者睡眠第四阶段）',
+  ],
+  praise: [
+    '夸他一句，他淡定转身，撞上了玻璃门。',
+    '彩虹屁命中：低音炮当场破音，重录了三次。',
+    '他说无聊……（把你的夸夸录音设成了闹钟）',
+    '被夸后的攻在天台吹了十分钟风才把嘴角压下去。',
+    '夸夸生效：攻壳出现裂缝，内芯是草莓味的。',
+  ],
+  play: [
+    '丢球？幼稚。（提前三秒到达落点）',
+    '他单手接球转身扣篮，西装下摆划出完美弧线。',
+    '玩球十分钟，攻的领带歪了，眼睛亮得像小狗。',
+    '接球成功率 100%，本座称之为商业敏锐度训练。',
+    '警告：该攻已进入放风模式，理智余额不足。',
+  ],
+}
+
+const GONG_CRIT_QUIPS = [
+  '攻力暴走！！低音炮共振碎了三块玻璃，功德 +66。',
+  '触发隐藏剧情：冷面攻当众笑出声，热搜第一实时锁定。',
+  '反差临界！全城高冷人设集体崩塌，监控已流出。',
+]
+
+/** 按语气取动作文案池 */
+export function quipsFor(actionId: ActionId, tone: ToneId): string[] {
+  if (tone === 'gong') return GONG_QUIPS[actionId]
+  return ACTIONS.find((a) => a.id === actionId)?.quips ?? []
+}
+
+/** 按语气取暴击文案池 */
+export function critQuipsFor(tone: ToneId): string[] {
+  return tone === 'gong' ? GONG_CRIT_QUIPS : CRIT_QUIPS
+}
 
 export const ACHIEVEMENTS: Achievement[] = [
   { id: 'lv1', threshold: 50, title: '见习小嬷嬷', desc: '你已摸出新手气运' },

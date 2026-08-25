@@ -42,6 +42,49 @@ export interface RecentTemplate {
   ts: number
 }
 
+/* ---------- 语气包（嬷向 / 攻向二创） ---------- */
+
+export type ToneId = 'momo' | 'gong'
+
+export interface ToneDef {
+  id: ToneId
+  name: string
+  /** 单字徽标（嬷 / 攻） */
+  short: string
+  tagline: string
+}
+
+/* ---------- 原创角色库（免版权预设） ---------- */
+
+export interface CharacterDef {
+  id: string
+  name: string
+  /** 性格标签（展示在卡片上） */
+  vibe: string
+  /** 一句话人设 */
+  intro: string
+  /** 推荐语气：载入角色时自动切换 */
+  tone: ToneId
+  /** 像素画网格（每行一串调色板字母，'.' 为透明） */
+  grid: string[]
+  colors: Record<string, string>
+}
+
+/* ---------- 工作流（可保存 / 复用的创作流水线） ---------- */
+
+export interface WorkflowSnapshot {
+  id: string
+  name: string
+  /** 原创角色 id；null 表示保存时用的是上传图/默认嬷嬷（图不落盘，载入时保留当前角色） */
+  characterId: string | null
+  styleId: StyleId
+  resolution: number
+  tone: ToneId
+  /** 动作脚本：一键演出按序连打 */
+  script: ActionId[]
+  ts: number
+}
+
 /* ---------- 养育状态（拓麻歌子式轻量面板） ---------- */
 
 export interface CareStats {
@@ -64,6 +107,10 @@ export interface CommunityPost {
   /** 像素缩略图 dataURL */
   thumb: string
   styleName: string
+  /** 风格 id：供「二创同款」还原风格（旧数据可能缺失，按 styleName 回退） */
+  styleId?: StyleId
+  /** 语气标签（嬷向 / 攻向），旧数据可能缺失 */
+  tone?: ToneId
   power: number
   level: string
   likes: number

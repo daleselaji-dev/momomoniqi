@@ -120,6 +120,7 @@ export function downloadCard(canvas: HTMLCanvasElement, filename = 'momo-card.pn
   }, 'image/png')
 }
 
-export function buildShareText(power: number, level: string, quip: string): string {
-  return `我在【嬷嬷模拟器】里把角色宠出了 ${power} 点嬷力值，当前段位「${level}」。${quip} #嬷嬷模拟器 #momomoniqi`
+export function buildShareText(power: number, level: string, quip: string, toneTag?: string): string {
+  const extra = toneTag ? ` #${toneTag}` : ''
+  return `我在【嬷嬷模拟器】里把角色宠出了 ${power} 点嬷力值，当前段位「${level}」。${quip} #嬷嬷模拟器 #momomoniqi${extra}`
 }

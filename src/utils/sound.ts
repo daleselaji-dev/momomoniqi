@@ -159,3 +159,12 @@ export function playReject(): void {
   beep({ freq: 220, dur: 0.14, type: 'sawtooth', vol: 0.045 })
   beep({ freq: 165, dur: 0.22, delay: 0.15, type: 'sawtooth', vol: 0.045 })
 }
+
+/** 角色载入传送音：上滑锯齿 + 落定琶音 */
+export function playSpawn(): void {
+  beep({ freq: 262, slide: 1046, dur: 0.18, type: 'sawtooth', vol: 0.04 })
+  noiseBurst(0.08, 0.02, 0.03)
+  beep({ freq: 523, dur: 0.06, delay: 0.18, type: 'square', vol: 0.04 })
+  beep({ freq: 784, dur: 0.06, delay: 0.25, type: 'square', vol: 0.045 })
+  beep({ freq: 1046, dur: 0.12, delay: 0.32, type: 'square', vol: 0.05 })
+}

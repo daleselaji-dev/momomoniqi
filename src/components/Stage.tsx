@@ -7,6 +7,10 @@ interface Props {
   sprite: HTMLCanvasElement
   quip: Quip | null
   onAction: (action: ActionDef) => void
+  /** 工作流「一键演出」的外部触发信号：seq 变化即连打对应动作 */
+  autoFire?: { action: ActionDef; seq: number } | null
+  /** 角色载入信号：变化时播放 spawn 传送动效 */
+  spawnTick?: number
 }
 
 interface Particle {
@@ -21,12 +25,14 @@ const CONFETTI_COLORS = ['#ff4d8d', '#b8f04a', '#ff9edb', '#7df6ff', '#ffd166']
 let particleSeq = 0
 
 /** 互动舞台：像素角色 + 动作按钮 + 动画/粒子/彩屑/震屏/闪光反馈 + 文案气泡 */
-export function Stage({ sprite, quip, onAction }: Props) {
+export function Stage({ sprite, quip, onAction, autoFire, spawnTick }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [anim, setAnim] = useState<{ id: ActionId; tick: number } | null>(null)
   const [particles, setParticles] = useState<Particle[]>([])
   const [shaking, setShaking] = useState(false)
   const [flashing, setFlashing] = useState(false)
+  const [spawning, setSpawning] = useState(false)
+  const fireRef = useRef<(action: ActionDef) => void>(() => {})
 
   /** anim.tick 变化会通过 key 重挂载画布（重启 CSS 动画），必须跟着重绘 */
   useEffect(() => {
@@ -45,6 +51,19 @@ export function Stage({ sprite, quip, onAction }: Props) {
       window.clearTimeout(t2)
     }
   }, [quip])
+
+  /** 工作流自动连打：seq 变化即执行完整 fire 管线（动画/粒子/音效/数值） */
+  useEffect(() => {
+    if (autoFire) fireRef.current(autoFire.action)
+  }, [autoFire])
+
+  /** 角色载入：spawn 传送动效（缩放弹入 + 扫描线掠过） */
+  useEffect(() => {
+    if (!spawnTick) return
+    setSpawning(true)
+    const t = window.setTimeout(() => setSpawning(false), 780)
+    return () => window.clearTimeout(t)
+  }, [spawnTick])
 
   function fire(action: ActionDef) {
     setAnim((prev) => ({ id: action.id, tick: (prev?.tick ?? 0) + 1 }))
@@ -74,10 +93,11 @@ export function Stage({ sprite, quip, onAction }: Props) {
     }, 1400)
     onAction(action)
   }
+  fireRef.current = fire
 
   return (
     <div className="panel stage-panel">
-      <h3 className="panel-title">03 · 开嬷现场</h3>
+      <h3 className="panel-title">04 · 开嬷现场</h3>
 
       <div className={`stage${shaking ? ' shaking' : ''}`}>
         {quip && (
@@ -86,10 +106,15 @@ export function Stage({ sprite, quip, onAction }: Props) {
           </div>
         )}
 
-        <div key={`c${anim?.tick ?? 0}`} className={`stage-char${anim ? ` anim-${anim.id}` : ''}`}>
+        <div
+          key={`c${anim?.tick ?? 0}`}
+          className={`stage-char${anim ? ` anim-${anim.id}` : ''}${spawning ? ' spawning' : ''}`}
+        >
           <canvas ref={canvasRef} width={480} height={480} className="stage-canvas" />
           {anim && <span className={`fx fx-${anim.id}`}>{ACTIONS.find((a) => a.id === anim.id)?.emoji}</span>}
         </div>
+
+        {spawning && <div className="spawn-sweep" aria-hidden="true" />}
 
         <div className="particle-layer" aria-hidden="true">
           {particles.map((p) =>
