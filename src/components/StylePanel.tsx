@@ -12,7 +12,7 @@ interface Props {
 export function StylePanel({ styleId, onStyle, resolution, onResolution }: Props) {
   return (
     <div className="panel">
-      <h3 className="panel-title">02 · 调风格</h3>
+      <h3 className="panel-title">03 · 调风格</h3>
 
       <label className="slider-row">
         <span className="slider-label">

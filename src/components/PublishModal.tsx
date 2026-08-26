@@ -2,13 +2,17 @@ import { useEffect, useRef, useState } from 'react'
 import { moderateFields } from '../utils/moderation'
 import { playReject } from '../utils/sound'
 import { Disclaimer } from './Disclaimer'
-import type { ModerationHit, PublishInput } from '../types'
+import type { ModerationHit, PostKind, PublishInput } from '../types'
 
 interface Props {
   thumb: string
   power: number
   level: string
   styleName: string
+  /** art = 嬷嬷作品；flow = 玩法配方帖 */
+  kind: PostKind
+  /** 配方帖展示的配方摘要 */
+  recipeSummary?: string
   onPublish: (input: PublishInput) => void
   onClose: () => void
 }
@@ -19,7 +23,7 @@ type Status = { kind: 'idle' } | { kind: 'checking' } | { kind: 'passed' } | { k
  * 发布到社区弹窗：填写 → 提交审核（强制）→ 通过后才可发布。
  * 任何字段被修改都会作废已有审核结果，必须重新过审。
  */
-export function PublishModal({ thumb, power, level, styleName, onPublish, onClose }: Props) {
+export function PublishModal({ thumb, power, level, styleName, kind, recipeSummary, onPublish, onClose }: Props) {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [blurb, setBlurb] = useState('')
@@ -69,7 +73,7 @@ export function PublishModal({ thumb, power, level, styleName, onPublish, onClos
     <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="发布到社区">
       <div className="modal publish-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
-          <h3 className="modal-title">⚑ 发布到社区展台</h3>
+          <h3 className="modal-title">{kind === 'flow' ? '🧪 发布玩法配方' : '⚑ 发布到社区展台'}</h3>
           <button className="modal-close" onClick={onClose} aria-label="关闭">
             ✕
           </button>
@@ -79,18 +83,24 @@ export function PublishModal({ thumb, power, level, styleName, onPublish, onClos
           <img src={thumb} alt="作品预览" className="publish-thumb" />
           <div className="publish-meta">
             <span className="publish-meta-line">风格 · {styleName}</span>
-            <span className="publish-meta-line strong">嬷力值 {power}</span>
-            <span className="publish-meta-line">段位 「{level}」</span>
+            {kind === 'flow' && recipeSummary ? (
+              <span className="publish-meta-line recipe">配方 · {recipeSummary}</span>
+            ) : (
+              <>
+                <span className="publish-meta-line strong">嬷力值 {power}</span>
+                <span className="publish-meta-line">段位 「{level}」</span>
+              </>
+            )}
           </div>
         </div>
 
         <label className="field">
-          <span className="field-label">作品标题 *</span>
+          <span className="field-label">{kind === 'flow' ? '配方标题 *' : '作品标题 *'}</span>
           <input
             className="field-input"
             value={title}
             maxLength={24}
-            placeholder="例：御膳房主厨嬷"
+            placeholder={kind === 'flow' ? '例：配方 | 液晶蛋档案流' : '例：御膳房主厨嬷'}
             onChange={(e) => edit(setTitle)(e.target.value)}
           />
         </label>
@@ -110,7 +120,7 @@ export function PublishModal({ thumb, power, level, styleName, onPublish, onClos
             className="field-input"
             value={blurb}
             maxLength={60}
-            placeholder="给你的嬷嬷写一句人设（选填）"
+            placeholder={kind === 'flow' ? '写下这套配方的适用场景（选填）' : '给你的嬷嬷写一句人设（选填）'}
             onChange={(e) => edit(setBlurb)(e.target.value)}
           />
         </label>

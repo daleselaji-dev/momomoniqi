@@ -53,7 +53,7 @@ interface BeepOpts {
   vol?: number
 }
 
-function beep({ freq, slide, dur = 0.09, delay = 0, type = 'square', vol = 0.05 }: BeepOpts): void {
+export function beep({ freq, slide, dur = 0.09, delay = 0, type = 'square', vol = 0.05 }: BeepOpts): void {
   const ac = ensureCtx()
   if (!ac) return
   const t0 = ac.currentTime + delay
@@ -70,7 +70,7 @@ function beep({ freq, slide, dur = 0.09, delay = 0, type = 'square', vol = 0.05 
 }
 
 /** 白噪声脉冲（咀嚼 / 彩屑质感） */
-function noiseBurst(dur = 0.08, delay = 0, vol = 0.04): void {
+export function noiseBurst(dur = 0.08, delay = 0, vol = 0.04): void {
   const ac = ensureCtx()
   if (!ac) return
   const t0 = ac.currentTime + delay
@@ -122,6 +122,10 @@ export function playAction(id: ActionId): void {
       beep({ freq: 784, slide: 392, dur: 0.12, delay: 0.14, type: 'triangle', vol: 0.05 })
       noiseBurst(0.04, 0.28, 0.04)
       break
+    case 'speak':
+      /* 开麦提示音；正片怪声由 utils/voice.ts 按档案声线合成 */
+      beep({ freq: 740, slide: 988, dur: 0.06, type: 'square', vol: 0.04 })
+      break
   }
 }
 
@@ -158,4 +162,33 @@ export function playPublish(): void {
 export function playReject(): void {
   beep({ freq: 220, dur: 0.14, type: 'sawtooth', vol: 0.045 })
   beep({ freq: 165, dur: 0.22, delay: 0.15, type: 'sawtooth', vol: 0.045 })
+}
+
+/** 档案盖章：两记闷响 + 一声清脆确认（入嬷登记完成） */
+export function playStamp(): void {
+  beep({ freq: 130, slide: 90, dur: 0.09, type: 'square', vol: 0.055 })
+  noiseBurst(0.05, 0.01, 0.045)
+  beep({ freq: 110, slide: 80, dur: 0.1, delay: 0.16, type: 'square', vol: 0.055 })
+  beep({ freq: 988, dur: 0.12, delay: 0.34, type: 'triangle', vol: 0.05 })
+}
+
+/** 配方保存：短促上行确认 */
+export function playSave(): void {
+  beep({ freq: 587, dur: 0.06, type: 'triangle', vol: 0.045 })
+  beep({ freq: 880, dur: 0.09, delay: 0.07, type: 'triangle', vol: 0.05 })
+}
+
+/** 出卡翻面：一阵短风 + 落定 */
+export function playFlip(): void {
+  noiseBurst(0.12, 0, 0.035)
+  beep({ freq: 494, slide: 740, dur: 0.08, delay: 0.1, type: 'triangle', vol: 0.04 })
+}
+
+/** 连击里程碑：随档位升调的琶音 */
+export function playComboMilestone(tier: number): void {
+  const base = 523 * Math.pow(1.19, Math.min(3, tier))
+  beep({ freq: base, dur: 0.06, vol: 0.05 })
+  beep({ freq: base * 1.26, dur: 0.06, delay: 0.06, vol: 0.05 })
+  beep({ freq: base * 1.5, dur: 0.12, delay: 0.12, vol: 0.055 })
+  noiseBurst(0.08, 0.12, 0.03)
 }

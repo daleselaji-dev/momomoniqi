@@ -25,7 +25,8 @@ export function Hero({ onStart, onCommunity }: { onStart: () => void; onCommunit
         </h1>
         <p className="hero-headline">把你最严肃的角色，宠成全网嬷嬷。</p>
         <p className="hero-support">
-          上传一张图，10 秒像素化开嬷 —— 摸头 rua 脸哄睡丢球，宠出离谱嬷力值，DIY 完过审上架社区展台。
+          上传一张图，自动抠图入嬷登记、生成角色档案 —— 摸头 rua 脸嬷语开麦，宠出离谱嬷力值；
+          贴纸装扮出三种嬷卡，配方还能发布成玩法帖给全站抄作业。
         </p>
         <div className="hero-cta-row">
           <button className="btn-primary" onClick={onStart}>

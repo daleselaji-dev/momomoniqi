@@ -11,7 +11,11 @@ export const CARE_EFFECTS: Record<ActionId, CareEffect> = {
   sleep: { energy: 18, bond: 2 },
   praise: { bond: 6, energy: -1 },
   play: { bond: 8, energy: -12 },
+  speak: { bond: 3, energy: -2 },
 }
+
+/** 直戳互动（点角色本体）的养育影响：轻量高频 */
+export const POKE_EFFECT: CareEffect = { bond: 1 }
 
 const clamp = (n: number) => Math.max(0, Math.min(100, n))
 
