@@ -1860,6 +1860,28 @@ input[type='range']::-moz-range-thumb {
   transform: translateZ(42px);
 }
 
+/* preserve-3d 下 z-index 失效，浮层统一用 translateZ 抬到角色之上 */
+.stage-3d .quip-bubble,
+.stage-3d .combo-badge {
+  transform: translateZ(56px);
+}
+
+.stage-3d .placing-hint {
+  transform: translateX(-50%) translateZ(56px);
+}
+
+.stage-3d .sticker-layer {
+  transform: translateZ(48px);
+}
+
+.stage-3d .stage-flash {
+  transform: translateZ(58px);
+}
+
+.stage-3d .pipeline-overlay {
+  transform: translateZ(64px);
+}
+
 .stage.placing {
   cursor: crosshair;
   outline: 2px dashed var(--green);

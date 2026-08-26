@@ -39,9 +39,14 @@ interface Cluster {
   b: number
 }
 
-/** 边缘一圈像素 → 量化直方图 → 前 3 大簇作为背景色候选 */
+/**
+ * 背景色估计：量化直方图取主簇。
+ * 采样区域避开「人像半身贴底边」的常见构图：顶边整行 + 左右边上部 60% + 底部两角，
+ * 不采底边中段（那里常是主体的身体，采进去会把主体当背景抠掉）。
+ */
 function estimateBackground(data: Uint8ClampedArray, w: number, h: number): Cluster[] {
   const bins = new Map<number, { n: number; r: number; g: number; b: number }>()
+  let total = 0
   const push = (i: number) => {
     const r = data[i]
     const g = data[i + 1]
@@ -53,20 +58,32 @@ function estimateBackground(data: Uint8ClampedArray, w: number, h: number): Clus
     bin.g += g
     bin.b += b
     bins.set(key, bin)
+    total++
   }
+  /* 顶边两行 */
   for (let x = 0; x < w; x++) {
     push((0 * w + x) * 4)
     push((1 * w + x) * 4)
-    push(((h - 1) * w + x) * 4)
-    push(((h - 2) * w + x) * 4)
   }
-  for (let y = 0; y < h; y++) {
+  /* 左右边上部 60% */
+  const sideH = Math.floor(h * 0.6)
+  for (let y = 0; y < sideH; y++) {
     push((y * w + 0) * 4)
     push((y * w + 1) * 4)
     push((y * w + w - 1) * 4)
     push((y * w + w - 2) * 4)
   }
+  /* 底部两角（各 14% 宽 × 两行） */
+  const corner = Math.floor(w * 0.14)
+  for (let x = 0; x < corner; x++) {
+    push(((h - 1) * w + x) * 4)
+    push(((h - 2) * w + x) * 4)
+    push(((h - 1) * w + (w - 1 - x)) * 4)
+    push(((h - 2) * w + (w - 1 - x)) * 4)
+  }
+  /* 只保留占采样 ≥5% 的显著簇，零星杂色不算背景 */
   return [...bins.values()]
+    .filter((bin) => bin.n >= total * 0.05)
     .sort((a, b) => b.n - a.n)
     .slice(0, 3)
     .map((bin) => ({ r: bin.r / bin.n, g: bin.g / bin.n, b: bin.b / bin.n }))

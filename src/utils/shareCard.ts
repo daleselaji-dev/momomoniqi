@@ -210,14 +210,14 @@ export function renderDuelCard(input: CardInput): HTMLCanvasElement {
   ctx.font = `600 26px ${MONO}`
   ctx.fillText('▚ MOMOMONIQI · 反差对比卡 ▞', W / 2, 82)
 
-  const size = 360
+  const size = 340
   const x = (W - size) / 2
 
   /* —— 开嬷前 —— */
   ctx.fillStyle = '#9b93ad'
   ctx.font = `800 34px ${ZH}`
-  ctx.fillText('开嬷前 · 威严存档', W / 2, 148)
-  const yA = 176
+  ctx.fillText('开嬷前 · 威严存档', W / 2, 144)
+  const yA = 170
   ctx.fillStyle = '#12101c'
   ctx.fillRect(x - 16, yA - 16, size + 32, size + 32)
   ctx.strokeStyle = '#5a5470'
@@ -227,10 +227,10 @@ export function renderDuelCard(input: CardInput): HTMLCanvasElement {
   ctx.fillStyle = 'rgba(155,147,173,0.9)'
   ctx.font = `600 22px ${MONO}`
   ctx.textAlign = 'left'
-  ctx.fillText('SERIOUS.PNG', x - 10, yA + size + 44)
+  ctx.fillText('SERIOUS.PNG', x - 10, yA + size + 42)
 
   /* —— 一键开嬷分割带 —— */
-  const yMid = yA + size + 70
+  const yMid = yA + size + 58
   ctx.save()
   ctx.translate(W / 2, yMid + 26)
   ctx.rotate(-0.028)
@@ -243,7 +243,7 @@ export function renderDuelCard(input: CardInput): HTMLCanvasElement {
   ctx.restore()
 
   /* —— 开嬷后 —— */
-  const yB = yMid + 96
+  const yB = yMid + 88
   ctx.fillStyle = '#ff9edb'
   ctx.font = `800 34px ${ZH}`
   ctx.textAlign = 'center'
@@ -261,18 +261,14 @@ export function renderDuelCard(input: CardInput): HTMLCanvasElement {
   ctx.textAlign = 'center'
   ctx.fillStyle = '#f5eee0'
   ctx.font = `900 40px ${ZH}`
-  ctx.fillText(`嬷力值 ${input.power} · 「${input.level}」`, W / 2, yB + size + 96)
+  ctx.fillText(`嬷力值 ${input.power} · 「${input.level}」`, W / 2, yB + size + 88)
 
   ctx.fillStyle = '#c9c2d8'
-  ctx.font = `500 27px ${ZH}`
+  ctx.font = `500 26px ${ZH}`
   const lines = wrapText(ctx, `“${input.quip}”`, W - 180)
   lines.slice(0, 2).forEach((line, i) => {
-    ctx.fillText(line, W / 2, yB + size + 146 + i * 40)
+    ctx.fillText(line, W / 2, yB + size + 130 + i * 38)
   })
-
-  ctx.fillStyle = 'rgba(245,238,224,0.55)'
-  ctx.font = `500 22px ${MONO}`
-  ctx.fillText('momomoniqi · 反差越大，嬷力越强', W / 2, H - 52)
 
   return c
 }
