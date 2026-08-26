@@ -1,13 +1,12 @@
 import { useState } from 'react'
-import { buildShareText, downloadCard, renderShareCard } from '../utils/shareCard'
+import { buildShareText } from '../utils/shareCard'
 
 interface Props {
-  sprite: HTMLCanvasElement
   power: number
   level: string
   quipText: string
-  styleName: string
   onPublish: () => void
+  onOpenStudio: () => void
 }
 
 async function copyText(text: string): Promise<boolean> {
@@ -26,14 +25,9 @@ async function copyText(text: string): Promise<boolean> {
   }
 }
 
-/** 分享栏：发布到社区（先过审）/ Canvas 生成认证卡下载 PNG / 复制传播文案 */
-export function ShareBar({ sprite, power, level, quipText, styleName, onPublish }: Props) {
+/** 分享栏：发布到社区（先过审）/ 出卡工作室（3 模板）/ 复制传播文案 */
+export function ShareBar({ power, level, quipText, onPublish, onOpenStudio }: Props) {
   const [copied, setCopied] = useState(false)
-
-  function handleDownload() {
-    const card = renderShareCard({ sprite, power, level, quip: quipText, styleName })
-    downloadCard(card, `momo-card-${power}.png`)
-  }
 
   async function handleCopy() {
     const ok = await copyText(buildShareText(power, level, quipText))
@@ -48,8 +42,8 @@ export function ShareBar({ sprite, power, level, quipText, styleName, onPublish 
       <button className="btn-accent" onClick={onPublish}>
         ⚑ 发布到社区（先过审）
       </button>
-      <button className="btn-primary" onClick={handleDownload}>
-        ⬇ 生成嬷嬷认证卡 PNG
+      <button className="btn-primary" onClick={onOpenStudio}>
+        🎴 出卡工作室（3 种模板）
       </button>
       <button className="btn-ghost" onClick={handleCopy}>
         {copied ? '✓ 已复制，快去发' : '⧉ 复制传播文案'}

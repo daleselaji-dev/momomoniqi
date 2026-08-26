@@ -92,6 +92,14 @@ export const ACTIONS: ActionDef[] = [
       '警告：该嬷嬷已进入撒欢模式，拉都拉不住。',
     ],
   },
+  {
+    id: 'speak',
+    label: '嬷语开麦',
+    emoji: '🎙️',
+    particles: ['🎵', '💬', '📢'],
+    /* speak 的气泡文案由 utils/voice.ts 按档案声线现场生成（嬷语 + 官方翻译），这里仅兜底 */
+    quips: ['嘟噜咕嘟·嬷！（翻译：麦克风已抢到，不还了。）'],
+  },
 ]
 
 export const CRIT_QUIPS = [

@@ -1,10 +1,11 @@
 import { getPreset } from './presets'
 import { getDefaultSource } from '../utils/defaultMomo'
 import { pixelate } from '../utils/pixelate'
-import type { CommunityPost, StyleId } from '../types'
+import type { CommunityPost, PostKind, StyleId, WorkflowRecipe } from '../types'
 
 interface SeedDef {
   id: string
+  kind?: PostKind
   title: string
   author: string
   blurb: string
@@ -14,6 +15,7 @@ interface SeedDef {
   level: string
   likes: number
   cheers: number
+  recipe?: WorkflowRecipe
 }
 
 /** 内置种子同人作品：首次访问社区就有内容可刷 */
@@ -78,6 +80,48 @@ const SEED_DEFS: SeedDef[] = [
     likes: 142,
     cheers: 57,
   },
+  {
+    id: 'seed-flow-crt',
+    kind: 'flow',
+    title: '配方 | 赛博夜巡工作流',
+    author: 'NEON_MOMO',
+    blurb: '抠图开到 55，赛博粉 + 64 格，出反差对比卡最炸。',
+    styleId: 'cyberpink',
+    resolution: 64,
+    power: 0,
+    level: '路人嬷',
+    likes: 188,
+    cheers: 71,
+    recipe: {
+      cutout: true,
+      tolerance: 55,
+      styleId: 'cyberpink',
+      resolution: 64,
+      stickerIds: ['shades', 'fire'],
+      cardTemplate: 'duel',
+    },
+  },
+  {
+    id: 'seed-flow-tama',
+    kind: 'flow',
+    title: '配方 | 液晶蛋档案流',
+    author: '像素考古队',
+    blurb: '拓麻液晶 24 格粗颗粒，配档案卡，一秒回 1997。',
+    styleId: 'tama',
+    resolution: 24,
+    power: 0,
+    level: '路人嬷',
+    likes: 96,
+    cheers: 40,
+    recipe: {
+      cutout: true,
+      tolerance: 40,
+      styleId: 'tama',
+      resolution: 24,
+      stickerIds: ['crown', 'zzz'],
+      cardTemplate: 'dossier',
+    },
+  },
 ]
 
 /** 用内置像素嬷嬷 + 不同风格预设现场渲染种子作品缩略图 */
@@ -87,6 +131,7 @@ export function buildSeedPosts(): CommunityPost[] {
     const sprite = pixelate(getDefaultSource(), def.resolution, getPreset(def.styleId))
     return {
       id: def.id,
+      kind: def.kind ?? 'art',
       title: def.title,
       author: def.author,
       blurb: def.blurb,
@@ -100,6 +145,7 @@ export function buildSeedPosts(): CommunityPost[] {
       mine: false,
       seed: true,
       ts: base - i * 1000 * 60 * 37,
+      recipe: def.recipe,
     }
   })
 }
