@@ -6,6 +6,17 @@
 
 产品规划详见 [docs/PRODUCT_PLAN.md](docs/PRODUCT_PLAN.md)。
 
+## 桌面预览版（Windows exe）
+
+免安装便携包发布在 [GitHub Releases](https://github.com/daleselaji-dev/momomoniqi/releases)：下载 `momomoniqi-preview-*-win-portable.exe`，双击即可运行。
+
+本地自行打包（需能拉取 Electron Windows 二进制）：
+
+```bash
+npm install
+npm run build:preview:win   # 产物在 dist-preview/
+```
+
 ## 本地运行
 
 要求 Node.js ≥ 20。
@@ -15,6 +26,7 @@ npm install
 npm run dev      # 开发服务器（默认 http://localhost:5173）
 npm run build    # 类型检查 + 生产构建，产物在 dist/
 npm run preview  # 预览生产构建
+npm run preview:electron  # 用 Electron 窗口打开生产构建
 ```
 
 纯静态产物，`dist/` 可直接部署到 GitHub Pages / 任意 CDN。
